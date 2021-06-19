@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:weather_app/screens/earth_screen.dart';
+import 'package:weather_app/screens/mars_screen.dart';
 import 'package:weather_app/widgets/planet_widget.dart';
 
 class InitScreen extends StatefulWidget {
@@ -36,8 +38,19 @@ class _InitScreenState extends State<InitScreen> {
               ],
             ),
           ),
-          Planet('Earth', 'assets/images/earth-icon.png'),
-          Planet('Mars', 'assets/images/mars-icon.png'),
+          GestureDetector(
+              onTap: () => {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (_) => EarthScreen()))
+                  },
+              child: Planet('Earth', 'assets/images/earth-icon.png')),
+          GestureDetector(
+            onTap: () => {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (_) => MarsScreen()))
+            },
+            child: Planet('Mars', 'assets/images/mars-icon.png'),
+          ),
         ],
       ),
     );
