@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class MarsScreen extends StatefulWidget {
   @override
@@ -11,13 +12,8 @@ class MarsScreen extends StatefulWidget {
 }
 
 class _MarsScreenState extends State<MarsScreen> {
-  // String url =    "https://mars.nasa.gov/rss/api/?feed=weather&category=msl&feedtype=json";
-
-  // "https://api.nasa.gov/insight_weather/?api_key=P9Vkc2d5cIZibL0rKjvzOCN5RjIpzCyM77T6NR6J&feedtype=json&ver=1.0";
   var encodedUrl = Uri.encodeFull(
       "https://mars.nasa.gov/rss/api/?feed=weather&category=msl&feedtype=json");
-  // var url = Uri.https(
-  // "mars.nasa.gov", "/rss/api/?feed=weather&category=msl&feedtype=json");
 
   var solKey;
   var data;
@@ -31,7 +27,7 @@ class _MarsScreenState extends State<MarsScreen> {
     );
     setState(() {
       // print(url);
-      print(encodedUrl);
+      // print(encodedUrl);
       data = json.decode(response.body);
       // print(data);
       solKey = data["soles"];
@@ -41,11 +37,16 @@ class _MarsScreenState extends State<MarsScreen> {
       for (int i = 0; i < solKey.length; i++) {
         weatherData.add(solKey[i]);
       }
-      print(weatherData);
+      // print(weatherData);
     });
   }
 
-  Widget listItem(String sol, int min, int max) {
+  Widget listItem(String sol, String min, String max, String date) {
+    DateFormat dateFormat = DateFormat("yyyy-MM-dd");
+
+    var dateParse = dateFormat.parse(date);
+
+    var dateFormatted = DateFormat('dd.MM.yyyy').format(dateParse);
     return Column(
       children: [
         SizedBox(height: 10.0),
@@ -84,10 +85,10 @@ class _MarsScreenState extends State<MarsScreen> {
           children: [
             Expanded(
               child: Text(
-                "",
+                "$dateFormatted",
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 8.0,
+                  fontSize: 20.0,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -123,6 +124,7 @@ class _MarsScreenState extends State<MarsScreen> {
   @override
   void initState() {
     this.getData();
+    super.initState();
   }
 
   @override
@@ -145,7 +147,7 @@ class _MarsScreenState extends State<MarsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Latest Weather\nat Elysium Planitia",
+                "Latest Weather\nat Gale Crater",
                 style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w800,
@@ -166,77 +168,75 @@ class _MarsScreenState extends State<MarsScreen> {
                       ),
                     ),
                   ),
+                  Expanded(
+                    child: Text(
+                      "High: ${(weatherData[0]["max_temp"])}°C",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 34.0,
+                        fontWeight: FontWeight.w300,
+                      ),
+                    ),
+                  ),
                 ],
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      "Today ",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 38.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      "Low: ${(weatherData[0]["min_temp"])}°C",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 34.0,
+                        fontWeight: FontWeight.w300,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 60.0,
+              ),
+              Text(
+                "Previous Days",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w800,
+                  fontSize: 28.0,
+                ),
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
+              Container(
+                height: 3.0,
+                width: double.infinity,
+                color: Colors.white,
+              ),
+              Expanded(
+                child: ListView.builder(
+                    itemCount: solKey.length,
+                    itemBuilder: (BuildContext, int index) {
+                      return listItem(
+                          (solKey[index]["sol"]),
+                          (weatherData[index]["min_temp"]),
+                          (weatherData[index]["max_temp"]),
+                          (weatherData[index]["terrestrial_date"]));
+                    }),
               )
-              //     Expanded(
-              //       child: Text(
-              //         "High: ${(weatherData[0]["max_temp"]).ceil()}°C",
-              //         style: TextStyle(
-              //           color: Colors.white,
-              //           fontSize: 34.0,
-              //           fontWeight: FontWeight.w300,
-              //         ),
-              //       ),
-              //     ),
-              //   ],
-              // ),
-              // SizedBox(
-              //   height: 10.0,
-              // ),
-              // Row(
-              //   children: [
-              //     Expanded(
-              //       child: Text(
-              //         "Today ",
-              //         style: TextStyle(
-              //           color: Colors.white,
-              //           fontSize: 38.0,
-              //           fontWeight: FontWeight.bold,
-              //         ),
-              //       ),
-              //     ),
-              //     Expanded(
-              //       child: Text(
-              //         "Low: ${(weatherData[0]["min_temp"]).ceil()}°C",
-              //         style: TextStyle(
-              //           color: Colors.white,
-              //           fontSize: 34.0,
-              //           fontWeight: FontWeight.w300,
-              //         ),
-              //       ),
-              //     ),
-              //   ],
-              // ),
-
-              // SizedBox(
-              //   height: 60.0,
-              // ),
-              // Text(
-              //   "Previous Days",
-              //   style: TextStyle(
-              //     color: Colors.white,
-              //     fontWeight: FontWeight.w800,
-              //     fontSize: 28.0,
-              //   ),
-              // ),
-              // SizedBox(
-              //   height: 10.0,
-              // ),
-              // Container(
-              //   height: 3.0,
-              //   width: double.infinity,
-              //   color: Colors.white,
-              // ),
-              // Expanded(
-              //   child: ListView.builder(
-              //       itemCount: solKey.length,
-              //       itemBuilder: (BuildContext, int index) {
-              //         return listItem(
-              //             solKey[index],
-              //             (weatherData[index]["min_temp"]).ceil(),
-              //             (weatherData[index]["max_temp"]).ceil());
-              //       }),
-              // )
             ],
           ),
         ),
