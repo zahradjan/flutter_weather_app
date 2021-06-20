@@ -15,7 +15,7 @@ class _MarsScreenState extends State<MarsScreen> {
   var encodedUrl = Uri.encodeFull(
       "https://mars.nasa.gov/rss/api/?feed=weather&category=msl&feedtype=json");
 
-  var solKey;
+  var solKey = [];
   var data;
 
   List weatherData = [];
@@ -31,12 +31,14 @@ class _MarsScreenState extends State<MarsScreen> {
       data = json.decode(response.body);
       // print(data);
       solKey = data["soles"];
+      print(solKey.length);
 
       solKey = solKey.toList();
+      weatherData = solKey.toList();
       // print(solKey.length);
-      for (int i = 0; i < solKey.length; i++) {
-        weatherData.add(solKey[i]);
-      }
+      // for (int i = 0; i < solKey.length; i++) {
+      // weatherData.add(solKey[i]);
+      // }
       // print(weatherData);
     });
   }
@@ -129,118 +131,123 @@ class _MarsScreenState extends State<MarsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // this.getData();
     return Scaffold(
-      body: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/images/mars-landscape.jpg"),
-            fit: BoxFit.cover,
-            alignment: Alignment.center,
-            colorFilter: ColorFilter.mode(Colors.black54, BlendMode.darken),
-          ),
-        ),
-        child: Padding(
-          padding: EdgeInsets.only(top: 50, bottom: 15, left: 15, right: 15),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Latest Weather\nat Gale Crater",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w800,
-                    fontSize: 28.0),
-              ),
-              SizedBox(
-                height: 30.0,
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      "Sol ${solKey[0]["sol"]}",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 38.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Text(
-                      "High: ${(weatherData[0]["max_temp"])}°C",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 34.0,
-                        fontWeight: FontWeight.w300,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 10.0,
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      "Today ",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 38.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Text(
-                      "Low: ${(weatherData[0]["min_temp"])}°C",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 34.0,
-                        fontWeight: FontWeight.w300,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 60.0,
-              ),
-              Text(
-                "Previous Days",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w800,
-                  fontSize: 28.0,
+      body: solKey.length > 0
+          ? Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage("assets/images/mars-landscape.jpg"),
+                  fit: BoxFit.cover,
+                  alignment: Alignment.center,
+                  colorFilter:
+                      ColorFilter.mode(Colors.black54, BlendMode.darken),
                 ),
               ),
-              SizedBox(
-                height: 10.0,
+              child: Padding(
+                padding:
+                    EdgeInsets.only(top: 50, bottom: 15, left: 15, right: 15),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Latest Weather\nat Gale Crater",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 28.0),
+                    ),
+                    SizedBox(
+                      height: 30.0,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            "Sol ${solKey[0]["sol"]}",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 38.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            "High: ${(weatherData[0]["max_temp"])}°C",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 34.0,
+                              fontWeight: FontWeight.w300,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            "Today ",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 38.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            "Low: ${(weatherData[0]["min_temp"])}°C",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 34.0,
+                              fontWeight: FontWeight.w300,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 60.0,
+                    ),
+                    Text(
+                      "Previous Days",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 28.0,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    Container(
+                      height: 3.0,
+                      width: double.infinity,
+                      color: Colors.white,
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                          itemCount: solKey.length,
+                          itemBuilder: (BuildContext, int index) {
+                            return listItem(
+                                (solKey[index]["sol"]),
+                                (weatherData[index]["min_temp"]),
+                                (weatherData[index]["max_temp"]),
+                                (weatherData[index]["terrestrial_date"]));
+                          }),
+                    )
+                  ],
+                ),
               ),
-              Container(
-                height: 3.0,
-                width: double.infinity,
-                color: Colors.white,
-              ),
-              Expanded(
-                child: ListView.builder(
-                    itemCount: solKey.length,
-                    itemBuilder: (BuildContext, int index) {
-                      return listItem(
-                          (solKey[index]["sol"]),
-                          (weatherData[index]["min_temp"]),
-                          (weatherData[index]["max_temp"]),
-                          (weatherData[index]["terrestrial_date"]));
-                    }),
-              )
-            ],
-          ),
-        ),
-      ),
+            )
+          : Text(''),
     );
   }
 }
