@@ -1,6 +1,7 @@
 // import 'dart:html';
 import 'dart:convert';
 import 'dart:async';
+import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -35,11 +36,6 @@ class _MarsScreenState extends State<MarsScreen> {
 
       solKey = solKey.toList();
       weatherData = solKey.toList();
-      // print(solKey.length);
-      // for (int i = 0; i < solKey.length; i++) {
-      // weatherData.add(solKey[i]);
-      // }
-      // print(weatherData);
     });
   }
 
@@ -132,9 +128,16 @@ class _MarsScreenState extends State<MarsScreen> {
   @override
   Widget build(BuildContext context) {
     // this.getData();
-    return Scaffold(
-      body: solKey.length > 0
-          ? Container(
+    return FutureBuilder(
+        future: this.getData(),
+        builder: (context, snapshot) {
+          final minTempOC = (double.parse(weatherData[0]["min_temp"]) + 33.8)
+              .toStringAsFixed(0);
+          final maxTempOC = (double.parse(weatherData[0]["max_temp"]) + 33.8)
+              .toStringAsFixed(0);
+          if (solKey.length > 0) {
+            return Scaffold(
+                body: Container(
               width: double.infinity,
               decoration: BoxDecoration(
                 image: DecorationImage(
@@ -176,7 +179,7 @@ class _MarsScreenState extends State<MarsScreen> {
                         ),
                         Expanded(
                           child: Text(
-                            "High: ${(weatherData[0]["max_temp"])}°C",
+                            "High: $maxTempOC°C",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 34.0,
@@ -193,7 +196,7 @@ class _MarsScreenState extends State<MarsScreen> {
                       children: [
                         Expanded(
                           child: Text(
-                            "Today ",
+                            "${(weatherData[0]["season"])}",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 38.0,
@@ -203,7 +206,7 @@ class _MarsScreenState extends State<MarsScreen> {
                         ),
                         Expanded(
                           child: Text(
-                            "Low: ${(weatherData[0]["min_temp"])}°C",
+                            "Low: $minTempOC°C",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 34.0,
@@ -236,18 +239,53 @@ class _MarsScreenState extends State<MarsScreen> {
                       child: ListView.builder(
                           itemCount: solKey.length,
                           itemBuilder: (BuildContext, int index) {
+                            final minTempC =
+                                (double.parse(weatherData[index]["min_temp"]) +
+                                        33.8)
+                                    .toStringAsFixed(0);
+                            final maxTempC =
+                                (double.parse(weatherData[index]["max_temp"]) +
+                                        33.8)
+                                    .toStringAsFixed(0);
                             return listItem(
                                 (solKey[index]["sol"]),
-                                (weatherData[index]["min_temp"]),
-                                (weatherData[index]["max_temp"]),
+                                minTempC,
+                                maxTempC,
                                 (weatherData[index]["terrestrial_date"]));
                           }),
                     )
                   ],
                 ),
               ),
-            )
-          : Text(''),
-    );
+            ));
+          } else {
+            return Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage("assets/images/mars-landscape.jpg"),
+                  fit: BoxFit.cover,
+                  alignment: Alignment.center,
+                  colorFilter:
+                      ColorFilter.mode(Colors.black54, BlendMode.darken),
+                ),
+              ),
+              child: Padding(
+                padding:
+                    EdgeInsets.only(top: 50, bottom: 15, left: 15, right: 15),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    LinearProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                          Colors.deepOrangeAccent),
+                    )
+                  ],
+                ),
+              ),
+            );
+          }
+        });
   }
 }
