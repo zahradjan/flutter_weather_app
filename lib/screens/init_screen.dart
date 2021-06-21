@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:weather_app/screens/earth_screen.dart';
 import 'package:weather_app/screens/mars_screen.dart';
 import 'package:weather_app/widgets/planet_widget.dart';
@@ -9,6 +10,19 @@ class InitScreen extends StatefulWidget {
 }
 
 class _InitScreenState extends State<InitScreen> {
+  Position position;
+  void getLocation() async {
+    position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    print(position);
+  }
+
+  @override
+  void initState() {
+    this.getLocation();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,8 +54,10 @@ class _InitScreenState extends State<InitScreen> {
           ),
           GestureDetector(
               onTap: () => {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (_) => EarthScreen()))
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => EarthScreen(position)))
                   },
               child: Planet('Earth', 'assets/images/earth-icon.png')),
           GestureDetector(

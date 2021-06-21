@@ -18,7 +18,7 @@ class _MarsScreenState extends State<MarsScreen> {
 
   var solKey = [];
   var data;
-
+  var toCelsius = 33.8;
   List weatherData = [];
 
   Future getData() async {
@@ -32,7 +32,7 @@ class _MarsScreenState extends State<MarsScreen> {
       data = json.decode(response.body);
       // print(data);
       solKey = data["soles"];
-      print(solKey.length);
+      // print(solKey.length);
 
       solKey = solKey.toList();
       weatherData = solKey.toList();
@@ -131,11 +131,13 @@ class _MarsScreenState extends State<MarsScreen> {
     return FutureBuilder(
         future: this.getData(),
         builder: (context, snapshot) {
-          final minTempOC = (double.parse(weatherData[0]["min_temp"]) + 33.8)
-              .toStringAsFixed(0);
-          final maxTempOC = (double.parse(weatherData[0]["max_temp"]) + 33.8)
-              .toStringAsFixed(0);
           if (solKey.length > 0) {
+            final minTempOC =
+                (double.parse(weatherData[0]["min_temp"]) + toCelsius)
+                    .toStringAsFixed(0);
+            final maxTempOC =
+                (double.parse(weatherData[0]["max_temp"]) + toCelsius)
+                    .toStringAsFixed(0);
             return Scaffold(
                 body: Container(
               width: double.infinity,
@@ -241,11 +243,11 @@ class _MarsScreenState extends State<MarsScreen> {
                           itemBuilder: (BuildContext, int index) {
                             final minTempC =
                                 (double.parse(weatherData[index]["min_temp"]) +
-                                        33.8)
+                                        toCelsius)
                                     .toStringAsFixed(0);
                             final maxTempC =
                                 (double.parse(weatherData[index]["max_temp"]) +
-                                        33.8)
+                                        toCelsius)
                                     .toStringAsFixed(0);
                             return listItem(
                                 (solKey[index]["sol"]),
