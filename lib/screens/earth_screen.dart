@@ -18,16 +18,8 @@ class _EarthScreenState extends State<EarthScreen> {
   var currentWeather;
   var historicWeather;
   var hwHourly;
-  // void getLocation() async {
-  //   widget.position = await Geolocator.getCurrentPosition(
-  //       desiredAccuracy: LocationAccuracy.high);
-  //   print(widget.position);
-  // }
 
   Future getCurrentWeather(Position position) async {
-    // print(position);
-    // getLocation();
-    // String city = position.city;
     String apiKey = "7d7eb0c393fc786be48641a6a0e08dd1";
     var lat = position.latitude;
     var lon = position.longitude;
@@ -37,9 +29,7 @@ class _EarthScreenState extends State<EarthScreen> {
     final response = await http.get(url);
 
     currentWeather = jsonDecode(response.body);
-    print("jsem tady");
-    print(currentWeather);
-    print("jsem tady");
+
     return currentWeather;
   }
 
@@ -60,35 +50,29 @@ class _EarthScreenState extends State<EarthScreen> {
 
     var lat = position.latitude;
     var lon = position.longitude;
+    var testTime =
+        (DateTime.now().millisecondsSinceEpoch / 1000).toStringAsFixed(0);
 
-    var time = 1624287777;
+    print(testTime);
+
     var url =
-        "https://api.openweathermap.org/data/2.5/onecall/timemachine?lat=$lat&lon=$lon&dt=$time&appid=$apiKey&units=metric";
-    print(url);
+        "https://api.openweathermap.org/data/2.5/onecall/timemachine?lat=$lat&lon=$lon&dt=$testTime&appid=$apiKey&units=metric";
+
     final response = await http.get(url);
 
     historicWeather = jsonDecode(response.body);
     hwHourly = historicWeather["hourly"];
-    print("jsem t");
-    print(historicWeather);
-    print("jsem t");
+
     return historicWeather;
   }
 
   Future getWeather(Position position) async {
-    getCurrentWeather(position);
-    getHistoricWeather(position);
+    await getCurrentWeather(position);
+    await getHistoricWeather(position);
   }
 
-  // @override
-  // void initState() {
-  //   // this.getLocation();
-
-  //   // this.getCurrentWeather(widget.position);
-  //   super.initState();
-  // }
-
   Widget listItem(String date, double temp) {
+    var tempFixed = temp.toStringAsFixed(0);
     return Column(
       children: [
         SizedBox(height: 10.0),
@@ -96,7 +80,8 @@ class _EarthScreenState extends State<EarthScreen> {
           children: [
             Expanded(
               child: Text(
-                "",
+                "$date",
+                textAlign: TextAlign.start,
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 24.0,
@@ -104,13 +89,10 @@ class _EarthScreenState extends State<EarthScreen> {
                 ),
               ),
             ),
-            SizedBox(
-              width: 120,
-            ),
             Expanded(
               child: Text(
-                "Avg: $temp°C",
-                textAlign: TextAlign.start,
+                "Avg: $tempFixed°C",
+                textAlign: TextAlign.end,
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 20.0,
@@ -127,7 +109,7 @@ class _EarthScreenState extends State<EarthScreen> {
           children: [
             Expanded(
               child: Text(
-                "$date",
+                "",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 20.0,
@@ -164,12 +146,14 @@ class _EarthScreenState extends State<EarthScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    // print("JSEM TU");
-    // print(weather);
-    // print("JSEM TU");
+  void initState() {
+    this.getWeather(widget.position);
+    super.initState();
+  }
 
-    // this.getCurrentWeather(widget.position);
+  @override
+  Widget build(BuildContext context) {
+    print(hwHourly);
     print(currentWeather);
     return FutureBuilder(
         future: this.getWeather(widget.position),
@@ -253,7 +237,7 @@ class _EarthScreenState extends State<EarthScreen> {
                           ),
                           Expanded(
                             child: Text(
-                              "Average\n$tempOC°C",
+                              "High: $maxTempOC°C",
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 34.0,
@@ -270,7 +254,7 @@ class _EarthScreenState extends State<EarthScreen> {
                         children: [
                           Expanded(
                             child: Text(
-                              "High: $maxTempOC°C",
+                              "Avg: $tempOC°C",
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 34.0,
@@ -294,7 +278,7 @@ class _EarthScreenState extends State<EarthScreen> {
                         height: 60.0,
                       ),
                       Text(
-                        "Previous Days",
+                        "Average hourly",
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w800,
