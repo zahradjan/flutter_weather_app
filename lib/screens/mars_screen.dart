@@ -158,7 +158,7 @@ class _MarsScreenState extends State<MarsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Latest Weather\nat Gale Crater",
+                      "Latest Temperature\nat Gale Crater",
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w800,

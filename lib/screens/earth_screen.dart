@@ -45,7 +45,13 @@ class _EarthScreenState extends State<EarthScreen> {
 
   String getDateFromTimestamp(int timestamp) {
     var date = new DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
-    var formatter = new DateFormat('E');
+    var formatter = new DateFormat("dd.MM.yyyy hh:mm");
+    return formatter.format(date);
+  }
+
+  String getDateFromTimestampToMonthAndDay(int timestamp) {
+    var date = new DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+    var formatter = new DateFormat("dd.MM.yyyy");
     return formatter.format(date);
   }
 
@@ -82,12 +88,7 @@ class _EarthScreenState extends State<EarthScreen> {
   //   super.initState();
   // }
 
-  Widget listItem(int date, double temp) {
-    DateFormat dateFormat = DateFormat("yyyy-MM-dd");
-
-    // var dateParse = dateFormat.parse(date);
-
-    // var dateFormatted = DateFormat('dd.MM.yyyy').format(dateParse);
+  Widget listItem(String date, double temp) {
     return Column(
       children: [
         SizedBox(height: 10.0),
@@ -95,7 +96,7 @@ class _EarthScreenState extends State<EarthScreen> {
           children: [
             Expanded(
               child: Text(
-                "date $date",
+                "",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 24.0,
@@ -108,7 +109,7 @@ class _EarthScreenState extends State<EarthScreen> {
             ),
             Expanded(
               child: Text(
-                "Temp: $temp°C",
+                "Avg: $temp°C",
                 textAlign: TextAlign.start,
                 style: TextStyle(
                   color: Colors.white,
@@ -126,7 +127,7 @@ class _EarthScreenState extends State<EarthScreen> {
           children: [
             Expanded(
               child: Text(
-                "",
+                "$date",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 20.0,
@@ -173,7 +174,7 @@ class _EarthScreenState extends State<EarthScreen> {
     return FutureBuilder(
         future: this.getWeather(widget.position),
         builder: (context, snapshot) {
-          if (currentWeather == null) {
+          if (currentWeather == null || hwHourly == null) {
             return Container(
               width: double.infinity,
               decoration: BoxDecoration(
@@ -201,6 +202,14 @@ class _EarthScreenState extends State<EarthScreen> {
               ),
             );
           } else {
+            var currentWDate =
+                getDateFromTimestampToMonthAndDay(currentWeather["dt"]);
+            final minTempOC =
+                (currentWeather["main"]["temp_min"]).toStringAsFixed(0);
+            final maxTempOC =
+                (currentWeather["main"]["temp_max"]).toStringAsFixed(0);
+            final tempOC = (currentWeather["main"]["temp"]).toStringAsFixed(0);
+
             return Scaffold(
               body: Container(
                 width: double.infinity,
@@ -221,7 +230,7 @@ class _EarthScreenState extends State<EarthScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Today's Weather\nat ${(currentWeather["name"])}",
+                        "Today's Temperature\nat ${(currentWeather["name"])}",
                         style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w800,
@@ -234,17 +243,17 @@ class _EarthScreenState extends State<EarthScreen> {
                         children: [
                           Expanded(
                             child: Text(
-                              "",
+                              "$currentWDate",
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 38.0,
+                                fontSize: 34.0,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
                           Expanded(
                             child: Text(
-                              "High: ${(currentWeather["main"]["temp_max"])}°C",
+                              "Average\n$tempOC°C",
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 34.0,
@@ -261,17 +270,17 @@ class _EarthScreenState extends State<EarthScreen> {
                         children: [
                           Expanded(
                             child: Text(
-                              "${(currentWeather["main"]["temp"])}",
+                              "High: $maxTempOC°C",
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 38.0,
-                                fontWeight: FontWeight.bold,
+                                fontSize: 34.0,
+                                fontWeight: FontWeight.w300,
                               ),
                             ),
                           ),
                           Expanded(
                             child: Text(
-                              "Low: ${(currentWeather["main"]["temp_min"])}°C",
+                              "Low:  $minTempOC°C",
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 34.0,
@@ -304,8 +313,10 @@ class _EarthScreenState extends State<EarthScreen> {
                         child: ListView.builder(
                             itemCount: hwHourly.length,
                             itemBuilder: (BuildContext, int index) {
-                              return listItem((hwHourly[index]["dt"]),
-                                  (hwHourly[index]["temp"]));
+                              var hourlyDate =
+                                  getDateFromTimestamp((hwHourly[index]["dt"]));
+                              return listItem(
+                                  (hourlyDate), (hwHourly[index]["temp"]));
                             }),
                       )
                     ],
