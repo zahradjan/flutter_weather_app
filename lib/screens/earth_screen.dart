@@ -6,14 +6,14 @@ import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 
 class EarthScreen extends StatefulWidget {
-  Position position;
-  EarthScreen(Position position) : this.position = position;
   @override
-  _EarthScreenState createState() => _EarthScreenState(position);
+  _EarthScreenState createState() => _EarthScreenState();
 }
 
 class _EarthScreenState extends State<EarthScreen> {
-  _EarthScreenState(Position position);
+  Position position;
+
+  _EarthScreenState();
 
   var currentWeather;
   var historicWeather;
@@ -66,7 +66,8 @@ class _EarthScreenState extends State<EarthScreen> {
     return historicWeather;
   }
 
-  Future getWeather(Position position) async {
+  Future getWeather() async {
+    position = await getLocation();
     await getCurrentWeather(position);
     await getHistoricWeather(position);
   }
@@ -145,19 +146,17 @@ class _EarthScreenState extends State<EarthScreen> {
     );
   }
 
-  @override
-  void initState() {
-    this.getWeather(widget.position);
-    super.initState();
+  Future getLocation() async {
+    position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    return position;
   }
 
   @override
   Widget build(BuildContext context) {
-    print(hwHourly);
-    print(currentWeather);
     return FutureBuilder(
-        future: this.getWeather(widget.position),
-        builder: (context, snapshot) {
+        future: getWeather(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (currentWeather == null || hwHourly == null) {
             return Container(
               width: double.infinity,
