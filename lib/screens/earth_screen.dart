@@ -72,7 +72,7 @@ class _EarthScreenState extends State<EarthScreen> {
     await getHistoricWeather(position);
   }
 
-  Widget listItem(String date, double temp) {
+  Widget listItem(String date, var temp) {
     var tempFixed = temp.toStringAsFixed(0);
     return Column(
       children: [

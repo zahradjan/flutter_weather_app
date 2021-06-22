@@ -20,7 +20,7 @@ class _InitScreenState extends State<InitScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Weather App',
+          'Temperature App',
           style: TextStyle(
               color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20.0),
         ),
