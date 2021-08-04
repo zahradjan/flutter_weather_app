@@ -10,13 +10,13 @@ Project contains two sections. First is weather info of GPS location on Earth. S
 <h2> Earth Weather</h2>
 <p> Latest temperature at your location. Earth Screen uses GPS sensor. Temperatures are displayed hourly in last 24h.</p>
 <div style="text-align:center">
-<img src="./assets/images/earth-weather-picture.PNG">
+<img src="./assets/images/earth-weather-picture.PNG" height="600px">
 </div>
 
 <h2>Mars Weather</h2>
 <p> Latest temperature at Gale Crater. App is connected to NASA Curiosity rover API that is recieving data from NASA Curiosity rover on Mars. Temperatures are displayed by SOL.</p>
 <div style="text-align:center">
-<img src="./assets/images/mars-weather-picture.PNG">
+<img src="./assets/images/mars-weather-picture.PNG" height="600px">
 </div>
 
 <h2 >Final Info</h2>
