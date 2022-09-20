@@ -26,4 +26,4 @@ Project is not under any license. You can do whatever you wish with it.
 
 <h2>Authors</h2>
 
-* **John Gardener** - *Whole project* - [zahradjan](https://github.com/zahradjan)
+* **Jan Zahradník** - *Whole project* - [zahradjan](https://github.com/zahradjan)
